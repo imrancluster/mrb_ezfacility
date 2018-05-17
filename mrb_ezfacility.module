@@ -5,6 +5,22 @@
  * mrb_ezfacility.module
  */
 
+
+/**
+ * Implements hook_theme().
+ */
+function mrb_ezfacility_theme() {
+    return array(
+        'mrb_operation_result' => array(
+            'variables' => array(
+                'data' => null,
+            ),
+            'template'  => 'templates/mrb-operation-result',
+        ),
+    );
+}
+
+
 /**
  * Implements hook_menu().
  */
@@ -14,7 +30,7 @@ function mrb_ezfacility_menu()
     $items = array();
 
     $items['start-mrb-pulling'] = array(
-        'title' => t(''),
+        'title' => t('Meeting Room Booking'),
         'type' => MENU_CALLBACK,
         'page callback' => 'start_meeting_room_booking_pulling',
         'file' => 'mrb_admin.inc',

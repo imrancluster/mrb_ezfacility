@@ -11,28 +11,48 @@
  */
 function start_meeting_room_booking_pulling() {
 
-    $mrb_data = call_ez_facility_for_mrb('05/15/2018', '05/17/2018');
+    if (isset($_GET['start_date']) && isset($_GET['end_date'])) {
 
-    $previous_mrb = _get_previous_mrb('05/15/2018', '05/17/2018');
+        $start_date = filter_xss($_GET['start_date']);
+        $end_date = filter_xss($_GET['end_date']);
 
-    $new = 0;
-    $update = 0;
-    foreach ($mrb_data as $mrb) {
-        if (array_key_exists($mrb['ResourceID'], $previous_mrb)) {
-            // Update existing mrb
-            _update_existing_mrb($previous_mrb[$mrb['ResourceID']], $mrb);
-            $update++;
+        $mrb_data = call_ez_facility_for_mrb($start_date, $end_date);
+
+        if (!empty($mrb_data)) {
+
+            $previous_mrb = _get_previous_mrb($start_date, $end_date);
+
+            $new = 0;
+            $update = 0;
+            foreach ($mrb_data as $mrb) {
+                if (array_key_exists($mrb['ResourceID'], $previous_mrb)) {
+                    // Update existing mrb
+                    _update_existing_mrb($previous_mrb[$mrb['ResourceID']], $mrb);
+                    $update++;
+                } else {
+                    // Create new mrb
+                    _create_new_mrb($mrb);
+                    $new++;
+                }
+
+            }
+
+            return theme( 'mrb_operation_result',
+                array(
+                    'data' => [
+                        'new' => $new,
+                        'update' => $update,
+                        'start_date' => $start_date,
+                        'end_date' => $end_date,
+                    ]
+                )
+            );
         } else {
-            // Create new mrb
-            _create_new_mrb($mrb);
-            $new++;
+            return "No MRB found from <strong>" .$start_date . " (mm/dd/yyyy)</strong> to <strong>" . $end_date . " (mm/dd/yyyy)</strong>.";
         }
-
     }
 
-    echo $new . " MRB Created<br>";
-    echo $update . " MRB Updated<br>";
-    exit();
+    return "<strong>start_date (mm/dd/yyyy)</strong> and <strong>end_date (mm/dd/yyyy)</strong> get parameters were required.";
 }
 
 /**
