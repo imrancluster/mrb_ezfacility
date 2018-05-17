@@ -1,0 +1,8 @@
+name = Meeting Room Booking
+description = The Meeting Room Booking module will pull data from EZFacility.
+core = 7.x
+package = Custom
+
+version = "7.x-1.0"
+core = "7.x"
+project = "mrb_ezfacility"

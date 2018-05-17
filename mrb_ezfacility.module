@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * mrb_ezfacility.module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function mrb_ezfacility_menu()
+{
+
+    $items = array();
+
+    $items['start-mrb-pulling'] = array(
+        'title' => t(''),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'start_meeting_room_booking_pulling',
+        'file' => 'mrb_admin.inc',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
