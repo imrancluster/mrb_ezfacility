@@ -17,9 +17,14 @@ function mrb_ezfacility_theme() {
             ),
             'template'  => 'templates/mrb-operation-result',
         ),
+        'screen_page_block_theme' => array(
+            'variables' => array(
+                'data' => null,
+            ),
+            'template'  => 'templates/screen-page-block-theme',
+        ),
     );
 }
-
 
 /**
  * Implements hook_menu().
@@ -38,4 +43,37 @@ function mrb_ezfacility_menu()
     );
 
     return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function mrb_ezfacility_block_info() {
+
+    $blocks['screen_page_block'] = array(
+        'info' => t('Screen page block'),
+        'cache' => DRUPAL_NO_CACHE
+    );
+
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function tonic_sfaq_block_view($delta = '') {
+
+    $block = array();
+    switch ($delta) {
+        case 'screen_page_block':
+            $block['content'] = _callback_for_screen_page_block();
+            break;
+    }
+    return $block;
+}
+
+function _callback_for_screen_page_block() {
+
+
+    return theme( 'screen_page_block_theme', array('data' => []));
 }
