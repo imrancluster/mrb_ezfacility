@@ -11,7 +11,7 @@
             </li>
         <?php endforeach; ?>
         <?php else: ?>
-            
+            <li>No event found.</li>
         <?php endif; ?>
     </ul>
 

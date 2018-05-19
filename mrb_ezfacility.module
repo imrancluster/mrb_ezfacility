@@ -105,14 +105,19 @@ function _get_all_events($screen_facility_id) {
 
         $event = node_load($result->entity_id);
 
-        $events[] = array(
-            'nid' => $event->nid,
-            'title' => $event->title,
-            'date' => array(
-                'start_date' => $event->field_schedule_date['und'][0]['value'],
-                'end_date' => $event->field_schedule_date['und'][0]['value2'],
-            ),
-        );
+        $today = new DateTime(date('Y-m-d H:i:s'));
+        $end_date = new DateTime($event->field_schedule_date['und'][0]['value2']);
+
+        if ($end_date >= $today) {
+            $events[] = array(
+                'nid' => $event->nid,
+                'title' => $event->title,
+                'date' => array(
+                    'start_date' => date('Y-m-d', strtotime($event->field_schedule_date['und'][0]['value'])), // Y-m-d H:i A
+                    'end_date' => date('Y-m-d', strtotime($event->field_schedule_date['und'][0]['value2'])),
+                ),
+            );
+        }
     }
 
     return $events;
