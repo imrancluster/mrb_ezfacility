@@ -61,7 +61,7 @@ function mrb_ezfacility_block_info() {
 /**
  * Implements hook_block_view().
  */
-function tonic_sfaq_block_view($delta = '') {
+function mrb_ezfacility_block_view($delta = '') {
 
     $block = array();
     switch ($delta) {
@@ -72,8 +72,48 @@ function tonic_sfaq_block_view($delta = '') {
     return $block;
 }
 
+/**
+ * @return string
+ * @throws Exception
+ */
 function _callback_for_screen_page_block() {
 
 
-    return theme( 'screen_page_block_theme', array('data' => []));
+    $node = menu_get_object();
+    $events = _get_all_events($node->field_facility['und'][0]['entity']->field_ez_facility_resources['und'][0]['target_id']);
+    $data = array(
+        'events' => $events,
+    );
+
+    return theme( 'screen_page_block_theme', array('data' => $data));
+}
+
+/**
+ * @param $screen_facility_id
+ * @return array
+ */
+function _get_all_events($screen_facility_id) {
+
+    $query = db_select('field_data_field_location', 'fl');
+    $query->fields('fl', array('entity_id', 'field_location_target_id'))
+        ->condition('fl.field_location_target_id', $screen_facility_id);
+    $results = $query->execute();
+
+    $events = array();
+
+    foreach($results as $result) {
+
+        $event = node_load($result->entity_id);
+
+        $events[] = array(
+            'nid' => $event->nid,
+            'title' => $event->title,
+            'date' => array(
+                'start_date' => $event->field_schedule_date['und'][0]['value'],
+                'end_date' => $event->field_schedule_date['und'][0]['value2'],
+            ),
+        );
+    }
+
+    return $events;
 }
