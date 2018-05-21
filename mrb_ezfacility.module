@@ -5,6 +5,7 @@
  * mrb_ezfacility.module
  */
 
+module_load_include('inc', 'mrb_ezfacility', 'mrb_admin');
 
 /**
  * Implements hook_theme().
@@ -121,4 +122,28 @@ function _get_all_events($screen_facility_id) {
     }
 
     return $events;
+}
+
+/**
+ * @throws Exception
+ */
+function start_meeting_room_booking_pulling_from_rules() {
+
+    $start_date = date('m/d/Y');
+    $end_date = date('m/d/Y');
+
+    $mrb_data = call_ez_facility_for_mrb($start_date, $end_date);
+
+    $previous_mrb = _get_previous_mrb($start_date, $end_date);
+
+    foreach ($mrb_data as $mrb) {
+        if (array_key_exists($mrb['ResourceID'], $previous_mrb)) {
+            // Update existing mrb
+            _update_existing_mrb($previous_mrb[$mrb['ResourceID']], $mrb);
+
+        } else {
+            // Create new mrb
+            _create_new_mrb($mrb);
+        }
+    }
 }
