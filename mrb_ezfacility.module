@@ -130,7 +130,7 @@ function _get_all_events($screen_facility_id) {
 function start_meeting_room_booking_pulling_from_rules() {
 
     $start_date = date('m/d/Y');
-    $end_date = date('m/d/Y');
+    $end_date = date('m/d/Y', time() + 86400);
 
     $mrb_data = call_ez_facility_for_mrb($start_date, $end_date);
 
