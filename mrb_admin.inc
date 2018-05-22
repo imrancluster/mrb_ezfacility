@@ -128,12 +128,14 @@ function _update_existing_mrb($existing_mrb, $mrb) {
 
     if ($node) {
         $node->title = $mrb['Title'];
+        $item_date_start = gmdate('Y-m-d G:i:s', strtotime($mrb['StartDateTime']));
+        $item_date_end = gmdate('Y-m-d G:i:s', strtotime($mrb['EndDateTime']));
+
         $node->field_schedule_date['und'][0] = array(
-            'value' => date('Y-m-d h:i:s', strtotime($mrb['StartDateTime'])),
-            'value2' => date('Y-m-d h:i:s', strtotime($mrb['EndDateTime'])),
-            'timezone' => 'America/Toronto',
+            'value' => $item_date_start,
+            'value2' => $item_date_end,
+            'timezone' => 'UTC',
             'timezone_db' => 'UTC',
-            'date_type' => 'datetime',
         );
         $node->field_location['und'][0]['target_id'] = _get_resource_reference($mrb['Resource']);
         node_save($node);
